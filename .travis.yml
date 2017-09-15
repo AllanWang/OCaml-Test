@@ -1,7 +1,8 @@
+os: linux
 language: c
-install: wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-ocaml.sh
+# install: wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-ocaml.sh
 script: 
-- bash -ex .travis-ocaml.sh
+#- bash -ex .travis-ocaml.sh
 - ocaml test.ml
 sudo: required
 env:

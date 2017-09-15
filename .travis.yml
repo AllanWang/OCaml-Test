@@ -1,12 +1,44 @@
-language: c
-sudo: required
-install: wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-opam.sh
-script: bash -ex .travis-opam.sh
-env:
-  - OCAML_VERSION=4.02
-  - OCAML_VERSION=4.03
-  - OCAML_VERSION=4.04
-  - OCAML_VERSION=4.05
-os:
-  - linux
-  - osx
+language: android
+jdk:
+- oraclejdk8
+android:
+  components:
+  - tools
+#  - android-21
+  - platform-tools
+  - tools
+  - build-tools-26.0.1
+  - android-26
+  - extra-android-support
+  - extra-android-m2repository
+  - extra-google-m2repository
+  licenses:
+  - ".+"
+#before_script:
+#- echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a
+#- emulator -avd test -no-audio -no-window &
+#- android-wait-for-emulator
+#- adb shell input keyevent 82 &
+script:
+- chmod +x gradlew
+- if [[ "$TRAVIS_BRANCH" == "master" ]]; then ./gradlew lintRelease publishRelease; else ./gradlew lintRelease test; fi
+branches:
+  except:
+  - gh-pages
+notifications:
+  email: false
+  slack:
+    rooms:
+    - pitchedapps:G5OB9U1vsDxy9mxt0Nt6gbFu#kau
+    on_success: always
+    on_failure: always
+cache:
+  directories:
+  - "$HOME/.m2"
+  - $HOME/.gradle/caches/
+  - $HOME/.gradle/wrapper/
+  - $HOME/.android/build-cache
+before_install:
+- openssl aes-256-cbc -K $encrypted_12e8842891a3_key -iv $encrypted_12e8842891a3_iv
+  -in files/kau.tar.enc -out kau.tar -d
+- tar xvf kau.tar
